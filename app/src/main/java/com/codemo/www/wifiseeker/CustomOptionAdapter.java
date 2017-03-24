@@ -22,7 +22,6 @@ public class CustomOptionAdapter extends ArrayAdapter<String> {
         super(context, R.layout.row_item, itemname);
         // TODO Auto-generated constructor stub
 
-//        this.context=context;
         this.itemname=itemname;
         this.imgid=imgid;
     }
