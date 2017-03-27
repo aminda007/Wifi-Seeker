@@ -1,4 +1,4 @@
-package com.codemo.www.wifiseeker;
+package com.codemo.www.wifiseeker.view;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import com.codemo.www.wifiseeker.R;
 
 /**
  * Created by root on 2/28/17.

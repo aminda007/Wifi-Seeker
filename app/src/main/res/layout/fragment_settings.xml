@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.codemo.www.wifiseeker.SettingsFragment"
+    tools:context="com.codemo.www.wifiseeker.view.SettingsFragment"
     android:padding="20dp">
 
     <!-- TODO: Update blank fragment layout -->
@@ -35,7 +35,7 @@
         android:id="@+id/wifiRange"
         android:textSize="20sp"
         android:layout_marginTop="50dp"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/wifiOff"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -54,8 +54,8 @@
         android:id="@+id/textView4"
         android:textSize="18sp"
         android:layout_alignBottom="@+id/wifiRange"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_alignStart="@+id/button2"
+        android:layout_alignLeft="@+id/wifiOff"
+        android:layout_alignStart="@+id/wifiOff"
         android:layout_marginLeft="14dp"
         android:layout_marginStart="14dp" />
 
@@ -83,7 +83,7 @@
         android:text="OFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button2"
+        android:id="@+id/wifiOff"
         android:layout_alignBaseline="@+id/wifiDisable"
         android:layout_alignBottom="@+id/wifiDisable"
         android:layout_alignParentRight="true"

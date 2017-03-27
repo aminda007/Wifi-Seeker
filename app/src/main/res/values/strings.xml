@@ -14,6 +14,7 @@
     <string name="wifiConnectBtn">Enable Wi-Fi</string>
     <string name="wifiDetailBtn">Show details</string>
     <string name="wifiDetailText">Wifi Details</string>
+    <string name="wifiScanBtn">Refresh</string>
     <!--<string name="wifiDetailsn  ">Wifi Details</string>-->
 
 

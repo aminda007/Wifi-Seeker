@@ -1,4 +1,4 @@
-package com.codemo.www.wifiseeker;
+package com.codemo.www.wifiseeker.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,16 +9,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.codemo.www.wifiseeker.R;
+
 /**
  * Created by root on 3/5/17.
  */
 
-public class CustomOptionAdapter extends ArrayAdapter<String> {
+public class WifiListAdapter extends ArrayAdapter<String> {
 //    private final Activity context;
     private final String[] itemname;
     private final Integer[] imgid;
 
-    public CustomOptionAdapter(Context context, String[] itemname, Integer[] imgid) {
+    public WifiListAdapter(Context context, String[] itemname, Integer[] imgid) {
         super(context, R.layout.row_item, itemname);
         // TODO Auto-generated constructor stub
 
@@ -29,15 +31,10 @@ public class CustomOptionAdapter extends ArrayAdapter<String> {
     public View getView(int position,View view,ViewGroup parent) {
         LayoutInflater inflater= LayoutInflater.from(getContext());
         View rowView=inflater.inflate(R.layout.row_item, null,true);
-
         TextView txtTitle = (TextView) rowView.findViewById(R.id.wifiName);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.wifiImage);
-//        TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
-
         txtTitle.setText(itemname[position]);
         imageView.setImageResource(imgid[position]);
-//        extratxt.setText("Description "+itemname[position]);
         return rowView;
-
-    };
+    }
 }

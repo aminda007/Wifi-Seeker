@@ -1,11 +1,9 @@
-package com.codemo.www.wifiseeker;
+package com.codemo.www.wifiseeker.view;
 
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,6 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codemo.www.wifiseeker.R;
+import com.codemo.www.wifiseeker.controller.WifiConnectionController;
+import com.codemo.www.wifiseeker.controller.WifiOptionsController;
+import com.codemo.www.wifiseeker.model.WifiNetwork;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,12 +30,11 @@ public class WifiOptionsFragment extends Fragment {
 
 
     ListView optionsList;
-//    private ScanResult scanResult;
-    String Names;
-    String Capabilities;
-    Integer frequency;
-    Integer level;
+    Integer index;
+    Integer positions;
+    Integer positionsOpen;
     TextView Header;
+    Boolean open;
     private String pasword;
 
     String[] itemname ={
@@ -59,7 +61,6 @@ public class WifiOptionsFragment extends Fragment {
     public WifiOptionsFragment() {
 
     }
-    WifiOptionsFragmentListener actvtyCommander;
 
     public String getPasword() {
         return pasword;
@@ -69,22 +70,6 @@ public class WifiOptionsFragment extends Fragment {
         this.pasword = pasword;
     }
 
-    public  interface  WifiOptionsFragmentListener{
-        public void showWifiDialog();
-        public void connectWifiPoint(String name, String capabilities,String password);
-
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try{
-            actvtyCommander =(WifiOptionsFragmentListener) activity;
-        }catch (ClassCastException e){
-            throw new ClassCastException(activity.toString());
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,7 +77,7 @@ public class WifiOptionsFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_wifi_options, container, false);
         Header=(TextView)view.findViewById(R.id.header);
 
-        ListAdapter adapter=new CustomOptionAdapter(getContext(), itemname, imgid);
+        ListAdapter adapter=new WifiListAdapter(getContext(), itemname, imgid);
         optionsList=(ListView)view.findViewById(R.id.optionsList);
         optionsList.setAdapter(adapter);
 
@@ -103,14 +88,16 @@ public class WifiOptionsFragment extends Fragment {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        Toast.makeText(getContext(), "clicked "+position, Toast.LENGTH_SHORT).show();
-//                        getActivity().getSupportFragmentManager().beginTransaction().remove(getParentFragment()).commit();
-                        Toast.makeText(getContext(), "wifi name"+Names, Toast.LENGTH_SHORT).show();
+                        if(open){
+                            index= positionsOpen;
+                        }else{
+                            index= positions;
+                        }
                         if(position==1){
-                            actvtyCommander.showWifiDialog();
+                            WifiOptionsController.showWifiDialog(index,open);
                         }if(position==0){
-                            if(Capabilities.toUpperCase().contains("WEP") || Capabilities.toUpperCase().contains("WPA")){
-                                Toast.makeText(getContext(), "protected"+Names, Toast.LENGTH_SHORT).show();
+                            if(!open){
+//                                Toast.makeText(getContext(), "protected"+WifiNetwork.getName(positions), Toast.LENGTH_SHORT).show();
                                 View view1=LayoutInflater.from(getActivity()).inflate(R.layout.wifi_enter_password,null);
                                 AlertDialog.Builder alertBuilder = new  AlertDialog.Builder(getActivity());
                                 alertBuilder.setView(view1);
@@ -123,15 +110,16 @@ public class WifiOptionsFragment extends Fragment {
                                     public void onClick(DialogInterface dialog, int which) {
 
                                         setPasword(password.getText().toString());
-                                        actvtyCommander.connectWifiPoint(Names,Capabilities,getPasword()) ;
+                                        WifiConnectionController.connectWifiPoint(WifiNetwork.getName(index), WifiNetwork.getCapabilities(index),getPasword()) ;
+                                        Toast.makeText(getContext(), "Connecting to "+WifiNetwork.getName(index), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 Dialog dialog =alertBuilder.create();
                                 dialog.show();
                             }
                             else{
-                                actvtyCommander.connectWifiPoint(Names,Capabilities,"");
-                                Toast.makeText(getContext(), "open "+Names, Toast.LENGTH_SHORT).show();
+                                WifiConnectionController.connectWifiPoint(WifiNetwork.getOpenName(index), WifiNetwork.getOpenCapabilities(index),"") ;
+                                Toast.makeText(getContext(), "Connecting to "+WifiNetwork.getOpenName(index), Toast.LENGTH_SHORT).show();
                             }
                         }
 
@@ -142,10 +130,13 @@ public class WifiOptionsFragment extends Fragment {
         return  view;
     }
 
-    public void setDetails(String wifiNames,String wifiCapabilities, Integer wifiFrequency, Integer wifiLevel){
-        this.Names=wifiNames;
-        this.Capabilities= wifiCapabilities;
-        this.frequency = wifiFrequency;
-        this.level=wifiLevel;
+    public void setPosition(Integer position){
+        this.positions=position;
+        this.open=false;
     }
+    public void setOpenPosition(Integer position){
+        this.positionsOpen=position;
+        this.open=true;
+    }
+
 }
