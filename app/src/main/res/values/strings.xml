@@ -16,6 +16,11 @@
     <string name="wifiDetailText">Wifi Details</string>
     <string name="wifiScanBtn">Refresh</string>
     <!--<string name="wifiDetailsn  ">Wifi Details</string>-->
+    <string name="map_type_None">None</string>
+    <string name="map_type_Normal">Normal</string>
+    <string name="map_type_Terrain">Terrain</string>
+    <string name="map_type_Satellite">Satellite</string>
+    <string name="map_type_Hybrid">Hybrid</string>
 
 
 </resources>

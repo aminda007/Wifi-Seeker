@@ -16,6 +16,9 @@
     <SearchView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/searchBar" />
+        android:id="@+id/searchBar"
+        android:background="@android:drawable/screen_background_dark_transparent"
+        android:foreground="@color/cast_expanded_controller_background_color"
+        android:layout_margin="5dp" />
 
 </FrameLayout>

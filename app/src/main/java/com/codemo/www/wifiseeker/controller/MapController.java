@@ -5,4 +5,7 @@ package com.codemo.www.wifiseeker.controller;
  */
 
 public class MapController {
+    public static void geoLocate(){
+
+    }
 }

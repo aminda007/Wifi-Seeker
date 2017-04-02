@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--tools:context="com.codemo.www.wifiseeker.view.MapsFragment">-->
+
+    <item
+        android:id="@+id/mapTypeNone"
+        android:title="@string/map_type_None"/>
+    <item
+        android:title="@string/map_type_Normal"
+        android:id="@+id/mapTypeNormal"/>
+    <item
+        android:title="@string/map_type_Terrain"
+        android:id="@+id/mapTypeTerrain"/>
+    <item
+        android:title="@string/map_type_Satellite"
+        android:id="@+id/mapTypeSatellite"/>
+    <item
+        android:title="@string/map_type_Hybrid"
+        android:id="@+id/mapTypeHybrid"/>
+
+</menu>
