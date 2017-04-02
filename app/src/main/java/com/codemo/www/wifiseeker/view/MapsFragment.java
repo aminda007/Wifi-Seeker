@@ -125,6 +125,7 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback{
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.map_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
     }
 }
 
