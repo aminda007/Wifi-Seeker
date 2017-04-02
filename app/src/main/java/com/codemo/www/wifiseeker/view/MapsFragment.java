@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.codemo.www.wifiseeker.R;
 import com.google.android.gms.maps.CameraUpdate;
@@ -39,9 +41,33 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map, container, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        SearchView searchBar = (SearchView) view.findViewById(R.id.searchBar);
 
+//        searchBar.setOnSearchClickListener(new SearchView.OnClickListener(){
+//
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(getContext(),"search clickedddd", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(getContext(),"search clicked" + query, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Toast.makeText(getContext(),"search changed" + newText, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+
+        return view;
     }
 
     @Override
