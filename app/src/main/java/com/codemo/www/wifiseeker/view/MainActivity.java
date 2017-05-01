@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     public static FragmentManager manager;
     public static WifiManager wifiManager;
 
+    public static DatabaseController dbControlller;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +56,16 @@ public class MainActivity extends AppCompatActivity {
 
         // crate options fragment
         FragmentTransaction transaction = manager.beginTransaction();
+
+
         transaction.add(R.id.activity_main, new WifiOptionsFragment(), "wifiOptionsFragment");
+        transaction.add(R.id.activity_main, new MapOptionsFragment(), "MapOptionsFragment");
+//        transaction.add(R.id.activity_main, new MapOptionsFragment(), "MapsFragment");
         transaction.commit();
+
+//        // create mapsFragment
+//        transaction.add(R.id.activity_main, new WifiOptionsFragment(), "MapsFragment");
+//        transaction.commit();
 
         // initiate WifiManager
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -66,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         //send reference of this activity to WifiController
         WifiController.setActivity(this);
         MapsFragment.setActivity(this);
+
+        // create an DatabaseController object
+        dbControlller = new DatabaseController(this,null,null,1);
 
         // bottom navigation implementation
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
@@ -98,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         // create Home if wifi is enabled
         if(wifiManager.isWifiEnabled()) {
             NavigationContoller.navigateTo("HomeFragment", manager);
@@ -138,7 +152,10 @@ public class MainActivity extends AppCompatActivity {
     private void hideOptions(){
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
+//
+        transaction.hide(manager.findFragmentByTag("MapOptionsFragment"));
         transaction.hide(manager.findFragmentByTag("wifiOptionsFragment"));
+//        transaction.hide(manager.findFragmentByTag("MapsFragment"));
         transaction.commit();
     }
 
@@ -163,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
         return mapFragment;
     }
-
 
 
 ////    @Override

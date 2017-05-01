@@ -18,6 +18,9 @@ import static com.codemo.www.wifiseeker.view.MainActivity.wifiManager;
  */
 
 public class WifiReceiver extends BroadcastReceiver {
+    static Boolean locked;
+
+
     List<ScanResult> wifiList;
     private StringBuilder  wifiAccessList;
     ArrayList<String> openWifiNames;
@@ -118,15 +121,21 @@ public class WifiReceiver extends BroadcastReceiver {
 //            String count = String.valueOf(wifiList.size());
 //            Toast.makeText(getApplicationContext(), "count is "+count, Toast.LENGTH_SHORT).show();
 //            homeFragment.showWifiNO(count);
-        new HomeController().showOpenWifiNames(wifiOpenNames,wifiList.size());
-        new HomeController().showWifiNames(wifiCloseNames,wifiList.size());
+        if(!locked) {
+            new HomeController().showOpenWifiNames(wifiOpenNames, wifiList.size());
+            new HomeController().showWifiNames(wifiCloseNames, wifiList.size());
 
 
-        ///////////************
+            ///////////************
 //            homeFragment.setScanResults(wifiList);
-        WifiConnectionController.setData(wifiCloseNames,wifiCloseCapabilities,wifiCloseFrequency,wifiCloseLevel);
-        WifiConnectionController.setOpenData(wifiOpenNames,wifiOpenCapabilities,wifiOpenFrequency,wifiOpenLevel);
+            WifiConnectionController.setData(wifiCloseNames, wifiCloseCapabilities, wifiCloseFrequency, wifiCloseLevel);
+            WifiConnectionController.setOpenData(wifiOpenNames, wifiOpenCapabilities, wifiOpenFrequency, wifiOpenLevel);
+        }
 //            wifiList.clear();
 //            wifiAccessList.delete(0,wifiAccessList.length());
         }
+    public static void setLock(Boolean lock){
+        locked =lock;
+
+    }
 }

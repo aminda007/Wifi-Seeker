@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codemo.www.wifiseeker.R;
+import com.codemo.www.wifiseeker.controller.HomeController;
 import com.codemo.www.wifiseeker.controller.WifiOptionsController;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
 //        create references for the interface components
@@ -66,6 +68,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         itemClicked(position);
+                        HomeController.setLock(true);
                     }
                 }
         );
@@ -74,6 +77,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         itemClickedOpen(position);
+                        HomeController.setLock(true);
                     }
                 }
         );

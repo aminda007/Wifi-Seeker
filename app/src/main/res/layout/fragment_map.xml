@@ -21,4 +21,34 @@
         android:foreground="@color/cast_expanded_controller_background_color"
         android:layout_margin="5dp" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/locateBtn"
+            android:drawableLeft="@drawable/ic_auto_locate"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.PopupMenu"
+            android:layout_marginBottom="143dp"
+
+            android:background="#00ffffff"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:paddingLeft="50dp" />
+        <Button
+            android:id="@+id/refreshLocationsBtn"
+            android:drawableLeft="@drawable/ic_refresh_black"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.PopupMenu"
+            android:layout_marginBottom="200dp"
+            android:background="#00ffffff"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="50dp" />
+    </RelativeLayout>
+
 </FrameLayout>

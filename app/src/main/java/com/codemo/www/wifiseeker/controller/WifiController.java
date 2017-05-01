@@ -14,6 +14,7 @@ import static com.codemo.www.wifiseeker.view.MainActivity.wifiManager;
 
 public class WifiController extends AppCompatActivity {
     static MainActivity Activity;
+
     public static void showEnableWifi(FragmentManager manager){
         FragmentTransaction transaction = manager.beginTransaction();
         String backStateName = "wifiConnnectFragment";
@@ -32,6 +33,9 @@ public class WifiController extends AppCompatActivity {
         }
         if(manager.findFragmentByTag("HomeFragment") != null){
             transaction.hide(manager.findFragmentByTag("HomeFragment"));
+        }
+        if(manager.findFragmentByTag("MapOptionsFragment") != null){
+            transaction.hide(manager.findFragmentByTag("MapOptionsFragment"));
         }
         transaction.commit();
     }

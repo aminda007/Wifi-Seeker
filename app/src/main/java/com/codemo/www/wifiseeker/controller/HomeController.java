@@ -73,6 +73,9 @@ public class HomeController extends AppCompatActivity {
 //        new MainActivity().startReceive();
 //        wifiList = wifiManager.getScanResults();
     }
+    public static void setLock(Boolean lock){
+        WifiReceiver.setLock(lock);
+    }
 //    public static void setData(String[] wifiNames,String[] wifiCapabilities, Integer[] wifiFrequency, Integer[] wifiLevel){
 //        HomeFragment homeFragment =(HomeFragment) manager.findFragmentByTag("HomeFragment");
 //        homeFragment.setData(wifiNames,wifiCapabilities,wifiFrequency,wifiLevel);
