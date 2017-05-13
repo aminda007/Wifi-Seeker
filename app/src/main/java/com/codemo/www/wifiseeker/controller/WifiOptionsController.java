@@ -8,6 +8,7 @@ import static android.app.PendingIntent.getActivity;
 import static com.codemo.www.wifiseeker.view.MainActivity.manager;
 import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -37,6 +38,8 @@ public class WifiOptionsController extends AppCompatActivity {
     }
     // create the dialog box containing ifi network details
     public static void showWifiDialog(Integer position, Boolean open){
+        Log.v("rht","aaaaaaaaaaa  inside Wifioptions Contoller show wifi dialog aaaaaaaaaaaaaaaa"+position+"swdd"+open );
+
         AlertDialog.Builder builder = new AlertDialog.Builder(manager.findFragmentByTag("wifiOptionsFragment").getActivity());
         View mview =  LayoutInflater.from(manager.findFragmentByTag("wifiOptionsFragment").getActivity()).inflate(R.layout.wifi_option_item,null);
         ListAdapter listAdapter;

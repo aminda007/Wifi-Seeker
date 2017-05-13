@@ -29,15 +29,15 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
 //        return inflater.inflate(R.layout.fragment_settings, container, false);
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-        final Button wifiButton = (Button)view.findViewById(R.id.wifiOff);
-        wifiButton.setOnClickListener(
-                new Button.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        buttonClicked();
-                    }
-                }
-        );
+//        final Button wifiButton = (Button)view.findViewById(R.id.locateBtn);
+//        wifiButton.setOnClickListener(
+//                new Button.OnClickListener(){
+//                    @Override
+//                    public void onClick(View v) {
+//                        buttonClicked();
+//                    }
+//                }
+//        );
         return view;
     }
     public void buttonClicked(){

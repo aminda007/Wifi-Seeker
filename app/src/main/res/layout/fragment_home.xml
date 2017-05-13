@@ -82,10 +82,25 @@
             android:requiresFadingEdge="horizontal|vertical"
             android:layout_above="@+id/wifiList"
             android:layout_centerHorizontal="true"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="bottom|right"
             android:background="?attr/actionModeSplitBackground"
             android:paddingTop="0dp"
-            android:layout_margin="5dp" />
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="30dp" />
+
+        <Button
+            android:text="Find Wi-Fi"
+            android:layout_width="138dp"
+            android:layout_height="31dp"
+            android:id="@+id/WifiFindBtn"
+            android:requiresFadingEdge="horizontal|vertical"
+            android:layout_above="@+id/wifiList"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="bottom|left"
+            android:background="?attr/actionModeSplitBackground"
+            android:paddingTop="0dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginBottom="5dp" />
 
     </android.support.v7.widget.CardView>
 
@@ -124,7 +139,7 @@
         android:layout_marginRight="10dp">
 
         <TextView
-            android:text="Password Protected"
+            android:text="Secured"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView3"

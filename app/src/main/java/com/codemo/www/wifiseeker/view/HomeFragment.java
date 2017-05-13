@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment {
         textAvailable = (TextView) view.findViewById(R.id.textAvailable);
         wifiList = (ListView) view.findViewById(R.id.wifiList);
         wifiOpenList = (ListView) view.findViewById(R.id.wifiOpenList);
-        // get details on connected network
+        // get details on setLockconnected network
         WifiScanBtn.setOnClickListener(
                 new Button.OnClickListener(){
                     @Override

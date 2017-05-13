@@ -1,5 +1,6 @@
 package com.codemo.www.wifiseeker.controller;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 
 public class DatabaseController extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
     private static final String DATABASE_NAME = "locations.db";
     private static final String TABLE_LOCATIONS = "locations";
     private static final String COLUMN_ID = "id";
@@ -225,7 +226,11 @@ public class DatabaseController extends SQLiteOpenHelper {
         Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....outside while cursur get rating....aaaaaaaaaaaaaaaaaaaaaa***************");
         c.close();
         db.close();
-        dbRating = Float.parseFloat(rating);
+        if(rating.length()==0){
+            dbRating = 0f;
+        }else{
+            dbRating = Float.parseFloat(rating);
+        }
         Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....before rating....aaaaaaaaaaaaaaaaaaaaaa***************"+dbRating);
 
         if(dbRating>=5){

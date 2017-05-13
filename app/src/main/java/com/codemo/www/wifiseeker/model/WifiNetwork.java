@@ -1,5 +1,7 @@
 package com.codemo.www.wifiseeker.model;
 
+import android.util.Log;
+
 /**
  * Created by root on 3/24/17.
  */
@@ -27,30 +29,32 @@ public class WifiNetwork {
     }
     public static String[] getData(Integer position){
         String[] wifiInfomation = {
-                "Name               : "+Names[position],
-                "Authentication     : "+getAuth(Capabilities[position]),
-                "Frequency(MHz)     : "+frequency[position],
-                "Signal level(dBm)  : "+getSignal(level[position])};
+                "Name                      :  "+Names[position],
+                "Security Type         :  "+getAuth(Capabilities[position]),
+                "Frequency(MHz)    :  "+frequency[position],
+                "Signal Strength      :  "+getSignal(level[position])};
 
 
         return wifiInfomation;
     }
     public static String[] getOpenData(Integer position){
+        Log.v("rht","aaaaaaaaaaa  inside WifiNetwork getopendata aaaaaaaaaaaaaaaa"+position+"swdd");
+        Log.v("rht","aaaaaaaaaaa  inside WifiNetwork getopendata aaaaaaaaaaaaaaaa"+openNames[position]+"swdd");
         String[] wifiInfomation = {
-                "Name               : "+openNames[position],
-                "Authentication     : "+"None",
-                "Frequency(MHz)     : "+frequency[position],
-                "Signal level(dBm)  : "+getSignal(level[position])};
-
+                "Name                      :  "+openNames[position],
+                "Security Type         :  "+"None",
+                "Frequency(MHz)    :  "+openFrequency[position],
+                "Signal Strength      :  "+getSignal(openLevel[position])};
+        Log.v("rht","aaaaaaaaaaa  inside WifiNetwork getopendata aaaaaaaaaaaaaaaa"+openNames[position]+"swdd");
 
         return wifiInfomation;
     }
 
     public static String getAuth(String auth){
         if(auth.toUpperCase().contains("WEP")){
-            auth="WEP";
+            auth="Secure";
         }else if(auth.toUpperCase().contains("WPA")) {
-            auth = "WPA";
+            auth = "Secure";
         }
         return auth;
     }

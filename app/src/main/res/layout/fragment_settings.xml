@@ -13,39 +13,17 @@
         android:layout_height="wrap_content"
         android:text="@string/settings_fragment"
         android:textSize="34sp"
-        android:id="@+id/header"
+        android:id="@+id/textView7"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:text="Disable Wifi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/wifiDisable"
-        android:textSize="20sp"
-        android:layout_marginTop="44dp"
-        android:layout_below="@+id/header"
-        android:layout_alignLeft="@+id/wifiRange"
-        android:layout_alignStart="@+id/wifiRange" />
-
-    <TextView
-        android:text="Set Wifi Range"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/wifiRange"
-        android:textSize="20sp"
-        android:layout_marginTop="50dp"
-        android:layout_below="@+id/wifiOff"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
-        android:layout_alignTop="@+id/textView4"
-        android:layout_toRightOf="@+id/textView4"
-        android:layout_toEndOf="@+id/textView4" />
+        android:layout_alignTop="@+id/wifiRange"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:text="2 km"
@@ -53,41 +31,65 @@
         android:layout_height="wrap_content"
         android:id="@+id/textView4"
         android:textSize="18sp"
-        android:layout_alignBottom="@+id/wifiRange"
-        android:layout_alignLeft="@+id/wifiOff"
-        android:layout_alignStart="@+id/wifiOff"
-        android:layout_marginLeft="14dp"
-        android:layout_marginStart="14dp" />
+        android:layout_alignTop="@+id/spinner"
+        android:layout_toLeftOf="@+id/switch2"
+        android:layout_toStartOf="@+id/switch2" />
 
     <TextView
         android:text="Automatic connection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/textView5"
+        android:textSize="20sp"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/textView5"
-        android:textSize="20sp" />
+        android:layout_alignParentStart="true" />
 
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/textView5"
-        android:layout_alignRight="@+id/button3"
-        android:layout_alignEnd="@+id/button3"
-        android:id="@+id/switch1"
-        android:layout_toEndOf="@+id/textView5"
-        android:layout_toRightOf="@+id/textView5" />
-
-    <Button
-        android:text="OFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/wifiOff"
-        android:layout_alignBaseline="@+id/wifiDisable"
+        android:id="@+id/switch3"
         android:layout_alignBottom="@+id/wifiDisable"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch4"
+        android:layout_above="@+id/textView5"
+        android:layout_marginBottom="25dp"
+        android:layout_alignLeft="@+id/switch3"
+        android:layout_alignStart="@+id/switch3" />
+
+    <TextView
+        android:text="Mobile Data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView8"
+        android:textSize="20sp"
+        android:layout_alignBottom="@+id/switch4"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch1"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="Search Range"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wifiRange"
+        android:textSize="20sp"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/switch1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:text="help"
@@ -95,8 +97,39 @@
         android:layout_height="wrap_content"
         android:id="@+id/button3"
         android:drawableLeft="@drawable/ic_help"
-        android:layout_marginBottom="73dp"
+        android:layout_marginBottom="71dp"
+        android:background="@drawable/cast_expanded_controller_bg_gradient_light"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="Location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/wifiDisable"
+        android:textSize="20sp"
+        android:layout_marginBottom="22dp"
+        android:layout_above="@+id/switch4"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textEnablewifi"
+        android:textSize="20sp"
+        android:layout_marginBottom="21dp"
+        android:layout_above="@+id/wifiDisable"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="Wi-Fi" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch2"
+        android:layout_alignBottom="@+id/textEnablewifi"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

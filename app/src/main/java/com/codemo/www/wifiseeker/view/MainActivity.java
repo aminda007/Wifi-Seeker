@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
     // start scanning for wifi
     public void startScan(){
         receiver = new WifiReceiver();
+        HomeController.setLock(false);
         registerReceiver(receiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
     }

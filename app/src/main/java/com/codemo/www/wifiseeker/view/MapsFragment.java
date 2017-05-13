@@ -24,7 +24,7 @@ import com.codemo.www.wifiseeker.R;
 //import com.google.android.gms.identity.intents.Address;
 import com.codemo.www.wifiseeker.controller.DatabaseController;
 import com.codemo.www.wifiseeker.controller.MapController;
-import com.codemo.www.wifiseeker.controller.NavigationContoller;
+import com.codemo.www.wifiseeker.controller.OnlineDatabaseController;
 import com.codemo.www.wifiseeker.model.MyClusterRenderer;
 import com.codemo.www.wifiseeker.model.MyItem;
 import com.google.android.gms.common.ConnectionResult;
@@ -41,6 +41,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.codemo.www.wifiseeker.view.MainActivity.manager;
@@ -51,6 +52,7 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
     static MainActivity Activity;
     GoogleApiClient mGoogleApiClient;
     Boolean autoLocate;
+    ArrayList<String[]> locationList;
     // Declare a variable for the cluster manager.
     private ClusterManager<MyItem> mClusterManager;
 
@@ -125,7 +127,11 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
                 new Button.OnClickListener(){
                     @Override
                     public void onClick(View v) {
+//                        mgoogleMap.clear();
+//                        mClusterManager.clearItems();
+//                        mgoogleMap.clear();
                         getLocations();
+//                        new OnlineDbController().selectLocations();
                     }
                 }
         );
@@ -176,16 +182,18 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
                 Log.v("rht","aaaaaaaaaaaaaaaaaaaa....1 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
 
                 Log.v("rht","aaaaaaaaaaaaaaaaaaaa.... 2 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-                MapOptionsFragment mapOptionsFragment = (MapOptionsFragment)manager.findFragmentByTag("MapOptionsFragment") ;
-                Log.v("rht","aaaaaaaaaaaaaaaaaaaa....3 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-                mapOptionsFragment.setId(myItem.getId());
-                mapOptionsFragment.setDetails();
-                Log.v("rht","aaaaaaaaaaaaaaaaaaaa...4.clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-//                NavigationContoller.navigateTo("MapOptionsFragment",manager);
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.hide(manager.findFragmentByTag("MapsFragment"));
-                transaction.show(manager.findFragmentByTag("MapOptionsFragment"));
-                transaction.commit();
+                OnlineDatabaseController network=new OnlineDatabaseController("getDetails");
+                network.execute(myItem.getId().toString());
+//                MapOptionsFragment mapOptionsFragment = (MapOptionsFragment)manager.findFragmentByTag("MapOptionsFragment") ;
+//                Log.v("rht","aaaaaaaaaaaaaaaaaaaa....3 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
+////                mapOptionsFragment.setId(myItem.getId());
+////                mapOptionsFragment.setDetails();
+//                Log.v("rht","aaaaaaaaaaaaaaaaaaaa...4.clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
+////                NavigationContoller.navigateTo("MapOptionsFragment",manager);
+//                FragmentTransaction transaction = manager.beginTransaction();
+//                transaction.hide(manager.findFragmentByTag("MapsFragment"));
+//                transaction.show(manager.findFragmentByTag("MapOptionsFragment"));
+//                transaction.commit();
 
                 Log.v("rht","aaaaaaaaaaaaaaaaaaaa...5.clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
 
@@ -200,13 +208,19 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
     }
 
     public void getLocations(){
-        DatabaseController dbc= MainActivity.dbControlller;
+        //DatabaseController dbc= MainActivity.dbControlller;
+        OnlineDatabaseController network=new OnlineDatabaseController("getAll");
+        network.execute();
+
 //        dbc.addLocation(location);
 //        String[] locationList = dbc.databaseTOString();
-        for (String[] i:dbc.databaseTOString()){
-            Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....marker located ....aaaaaaaaaaaaaaaaaaaaaa*************** " + i[0]);
-            showLocations(i);
-        }
+
+    }
+    public ArrayList<String[]> getlocationList(){
+        return locationList;
+    }
+    public void setlocationList(ArrayList<String[]> list){
+        locationList=list;
     }
 
     public void enableAutoLocate(){

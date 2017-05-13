@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.codemo.www.wifiseeker.R;
 import com.codemo.www.wifiseeker.controller.DatabaseController;
+import com.codemo.www.wifiseeker.controller.OnlineDatabaseController;
 import com.codemo.www.wifiseeker.controller.WifiConnectionController;
 import com.codemo.www.wifiseeker.controller.WifiOptionsController;
 import com.codemo.www.wifiseeker.model.Locations;
@@ -35,6 +36,7 @@ public class MapOptionsFragment extends Fragment {
 
 
     ListView optionsList;
+    String frequency;
     Integer index;
     Integer id;
     TextView Header;
@@ -91,21 +93,45 @@ public class MapOptionsFragment extends Fragment {
         return  view;
     }
 
-    public void setId(Integer idd){
-        id=idd;
-        Log.v("rht","aaaaaaaaaaaaaaaaaaaa....inside setIdddd....aaaaaaaaaaaaaaaaaaaaaa***************"+ idd);
-        DatabaseController dbc= MainActivity.dbControlller;
-        ratingBar.setRating(dbc.getRating(id.toString()));
-        Log.v("rht","aaaaaaaaaaaaaaaaaaaa....set rating to ....aaaaaaaaaaaaaaaaaaaaaa*************** "+dbc.getRating(id.toString()));
-        Log.v("rht","aaaaaaaaaaaaaaaaaaaa....last of  setId....aaaaaaaaaaaaaaaaaaaaaa***************");
-//        this.open=false;
+//    public void setId(Integer idd){
+//        id=idd;
+//        Log.v("rht","aaaaaaaaaaaaaaaaaaaa....inside setIdddd....aaaaaaaaaaaaaaaaaaaaaa***************"+ idd);
+////        DatabaseController dbc= MainActivity.dbControlller;
+//        OnlineDatabaseController network=new OnlineDatabaseController("getNameList");
+////        ratingBar.setRating(dbc.getRating(id.toString()));
+//        Log.v("rht","aaaaaaaaaaaaaaaaaaaa....set rating to ....aaaaaaaaaaaaaaaaaaaaaa*************** ");
+//        Log.v("rht","aaaaaaaaaaaaaaaaaaaa....last of  setId....aaaaaaaaaaaaaaaaaaaaaa***************");
+////        this.open=false;
+//    }
+    public void setRating(String rating){
+        Float dbRating = Float.parseFloat(rating);
+
+        Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....before rating....aaaaaaaaaaaaaaaaaaaaaa***************"+dbRating);
+
+        if(dbRating>=5){
+            dbRating= 5.0f;
+        }else if(dbRating>=4){
+            dbRating= 4.0f;
+        }else if(dbRating>=3){
+            dbRating= 3.0f;
+        }else if(dbRating>=2){
+            dbRating= 2.0f;
+        }else if(dbRating>=1){
+            dbRating= 1.0f;
+        }else{
+            dbRating= Float.valueOf(0f);
+        }
+        Log.v("rht","aaaaaaaaaaaaaaaaaaaa....  after asigning rating....aaaaaaaaaaaaaaaaaaaaaa***************"+dbRating);
+
+    ratingBar.setRating(dbRating);
     }
-    public void setDetails(){
-        DatabaseController dbc= MainActivity.dbControlller;
+
+    public void setDetails(String[] details){
+//      DatabaseController dbc= MainActivity.dbControlller;
         Log.v("rht","aaaaaaaaaaaaaaaaaaaa... in side get details....aaaaaaaaaaaaaaaaaaaaaa***************");
-        details = dbc.getDetails(id.toString());
-        Log.v("rht","aaaaaaaaaaaaaaaaaaaa....dtails ...aaaaaaaaaaaaaaaaaaaaaa*************** "+details[0]);
-        wifiName.setText(details[0]);
+//        id=details[0];
+        wifiName.setText(details[1]);
+        setRating(details[5]);
     }
 
 }
