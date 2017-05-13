@@ -5,5 +5,5 @@ package com.codemo.www.wifiseeker.model;
  */
 
 public class WifiLocator {
-
+    String s;
 }
