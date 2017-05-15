@@ -13,7 +13,10 @@ public class MyItem implements ClusterItem {
     private String mTitle;
     private String mSnippet;
     private  boolean open;
+    private String mname;
     private Integer mid;
+    private double mrating;
+    private int mreport;
 
 
     public MyItem(double lat, double lng) {
@@ -28,9 +31,12 @@ public class MyItem implements ClusterItem {
 //        mopen=o
     }
 
-    public MyItem(Integer id,double lat, double lng, boolean opens) {
+    public MyItem(Integer id,String name, double lat, double lng, boolean opens,double rating, int report) {
         mPosition = new LatLng(lat, lng);
         mid= id;
+        mreport=report;
+        mrating=rating;
+        setMname(name);
         setOpen(opens);
     }
 
@@ -64,5 +70,29 @@ public class MyItem implements ClusterItem {
 
     public void setId(Integer id) {
         this.mid = id;
+    }
+
+    public double getRating() {
+        return mrating;
+    }
+
+    public void setRating(double rating) {
+        this.mrating = rating;
+    }
+
+    public int getReport() {
+        return mreport;
+    }
+
+    public void setReport(int report) {
+        this.mreport = report;
+    }
+
+    public String getMname() {
+        return mname;
+    }
+
+    public void setMname(String mname) {
+        this.mname = mname;
     }
 }

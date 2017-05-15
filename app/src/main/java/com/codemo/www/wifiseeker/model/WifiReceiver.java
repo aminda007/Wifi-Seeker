@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
+import android.util.Log;
 
 import com.codemo.www.wifiseeker.controller.HomeController;
 import com.codemo.www.wifiseeker.controller.WifiConnectionController;
@@ -19,7 +20,7 @@ import static com.codemo.www.wifiseeker.view.MainActivity.wifiManager;
 
 public class WifiReceiver extends BroadcastReceiver {
     static Boolean locked;
-
+    private static boolean autoConnect;
 
     List<ScanResult> wifiList;
     private StringBuilder  wifiAccessList;
@@ -43,6 +44,15 @@ public class WifiReceiver extends BroadcastReceiver {
     Integer[] wifiOpenLevel;
     Integer noOfOpenWifi=0;
     Integer noOfClosedWifi=0;
+
+    public static boolean isAutoConnect() {
+        return autoConnect;
+    }
+
+    public static void setAutoConnect(boolean autoConnect) {
+        WifiReceiver.autoConnect = autoConnect;
+    }
+
     @Override
         public void onReceive(Context context, Intent intent) {
         Integer noOfOpenWifi=0;
@@ -121,6 +131,7 @@ public class WifiReceiver extends BroadcastReceiver {
 //            String count = String.valueOf(wifiList.size());
 //            Toast.makeText(getApplicationContext(), "count is "+count, Toast.LENGTH_SHORT).show();
 //            homeFragment.showWifiNO(count);
+        Log.v("rht","aaaaaaaaaaaaaaaaaaaa.... locked ...aaaaaaaaaaaaa"+locked);
         if(!locked) {
             new HomeController().showOpenWifiNames(wifiOpenNames, wifiList.size());
             new HomeController().showWifiNames(wifiCloseNames, wifiList.size());
@@ -130,6 +141,11 @@ public class WifiReceiver extends BroadcastReceiver {
 //            homeFragment.setScanResults(wifiList);
             WifiConnectionController.setData(wifiCloseNames, wifiCloseCapabilities, wifiCloseFrequency, wifiCloseLevel);
             WifiConnectionController.setOpenData(wifiOpenNames, wifiOpenCapabilities, wifiOpenFrequency, wifiOpenLevel);
+            if(isAutoConnect()){
+                WifiNetwork.autoConnection();
+            }
+
+
         }
 //            wifiList.clear();
 //            wifiAccessList.delete(0,wifiAccessList.length());

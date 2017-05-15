@@ -18,8 +18,11 @@ import android.widget.Toast;
 
 import com.codemo.www.wifiseeker.R;
 import com.codemo.www.wifiseeker.controller.HomeController;
+import com.codemo.www.wifiseeker.controller.OnlineDatabaseController;
 import com.codemo.www.wifiseeker.controller.WifiOptionsController;
+import com.codemo.www.wifiseeker.model.WifiLocator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.codemo.www.wifiseeker.view.MainActivity.wifiManager;
@@ -35,30 +38,67 @@ public class HomeFragment extends Fragment {
     TextView wifiNo;
     ListView wifiList;
     ListView wifiOpenList;
-
+    WifiLocator locator;
+    private static MainActivity activity;
     public HomeFragment() {
+    }
+
+    public static void setActivity(MainActivity activity) {
+        HomeFragment.activity = activity;
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // initialize location information
+        if(activity.isNetworkAvailable()){
+            initLocator();
+
+        }
 
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
 //        create references for the interface components
         final Button WifiScanBtn = (Button)view.findViewById(R.id.WifiScanBtn);
+        Button wifiFindBtn = (Button)view.findViewById(R.id.WifiFindBtn);
         wifiNo = (TextView) view.findViewById(R.id.wifiNo);
         textNetworks = (TextView) view.findViewById(R.id.textNetworks);
         textAvailable = (TextView) view.findViewById(R.id.textAvailable);
         wifiList = (ListView) view.findViewById(R.id.wifiList);
         wifiOpenList = (ListView) view.findViewById(R.id.wifiOpenList);
+
         // get details on setLockconnected network
         WifiScanBtn.setOnClickListener(
                 new Button.OnClickListener(){
                     @Override
                     public void onClick(View v) {
                         buttonClicked();
+                    }
+                }
+        );
+        // get Best wifi location
+        wifiFindBtn.setOnClickListener(
+                new Button.OnClickListener(){
+
+                    @Override
+                    public void onClick(View v) {
+                        if(activity.isGpsAvailable()){
+                            if(WifiLocator.isDataSet()){
+                                findWifi();
+                            }else{
+                                if(activity.isNetworkAvailable()){
+                                    initLocator();
+                                    Toast.makeText(getContext(),"Please wait a moment to download data", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getContext(),"Connect to internet before proceeding", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }else{
+                            Toast.makeText(getContext(),"enable location before proceeding", Toast.LENGTH_SHORT).show();
+                        }
+
+
                     }
                 }
         );
@@ -115,7 +155,7 @@ public class HomeFragment extends Fragment {
             wifiNo.setText(size.toString());
             textNetworks.setText("Wi-Fi networks");
         }
-        Toast.makeText(this.getContext(),"wifi updated", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this.getContext(),"wifi updated", Toast.LENGTH_SHORT).show();
     }
 
     //Show the open wifi networks
@@ -134,6 +174,22 @@ public class HomeFragment extends Fragment {
             wifiNo.setText(size.toString());
             textNetworks.setText("Wi-Fi networks");
         }
-        Toast.makeText(this.getContext(),"wifi updated", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this.getContext(),"wifi updated", Toast.LENGTH_SHORT).show();
+    }
+
+    public void findWifi(){
+        locator.getWifi();
+    }
+
+    public void setLocations(ArrayList<String[]> locationList) {
+        locator.setData(locationList);
+        WifiLocator.setDataSet(true);
+    }
+    public void initLocator(){
+        locator=new WifiLocator();
+
+        WifiLocator.setRange(2000f);
+        OnlineDatabaseController network=new OnlineDatabaseController("getData");
+        network.execute();
     }
 }

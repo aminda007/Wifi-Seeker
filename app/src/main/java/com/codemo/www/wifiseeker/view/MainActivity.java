@@ -1,8 +1,12 @@
 package com.codemo.www.wifiseeker.view;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,10 +15,15 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import com.codemo.www.wifiseeker.R;
 import com.codemo.www.wifiseeker.controller.NavigationContoller;
+import com.codemo.www.wifiseeker.model.WifiLocator;
+import com.codemo.www.wifiseeker.model.WifiNetwork;
 import com.codemo.www.wifiseeker.model.WifiReceiver;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -23,6 +32,9 @@ import com.google.android.gms.maps.MapFragment;
 
 
 import com.codemo.www.wifiseeker.controller.*;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     public static FragmentManager manager;
     public static WifiManager wifiManager;
 
-    public static DatabaseController dbControlller;
+    public static DatabaseController dbController;
 
 
     @Override
@@ -46,12 +58,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //initiate Fragment Manager
         manager = getSupportFragmentManager();
 
         // checks google play services availability
-        if(googleServicesAvailable()){
-            Toast.makeText(this, "Connected to Google Play Services" ,Toast.LENGTH_LONG).show();
+        if(!googleServicesAvailable()){
+            Toast.makeText(this, "Can not connect to Google Play Services" ,Toast.LENGTH_LONG).show();
         }
 
         // crate options fragment
@@ -60,9 +73,10 @@ public class MainActivity extends AppCompatActivity {
 
         transaction.add(R.id.activity_main, new WifiOptionsFragment(), "wifiOptionsFragment");
         transaction.add(R.id.activity_main, new MapOptionsFragment(), "MapOptionsFragment");
-//        transaction.add(R.id.activity_main, new MapOptionsFragment(), "MapsFragment");
+        transaction.add(R.id.activity_main, new MapsFragment(), "MapsFragment");
+        transaction.add(R.id.activity_main, new SettingsFragment(), "SettingsFragment");
         transaction.commit();
-
+//
 //        // create mapsFragment
 //        transaction.add(R.id.activity_main, new WifiOptionsFragment(), "MapsFragment");
 //        transaction.commit();
@@ -73,12 +87,21 @@ public class MainActivity extends AppCompatActivity {
         if(wifiManager.isWifiEnabled()){
             startScan();
         }
-        //send reference of this activity to WifiController
+        // check internet connection
+        MapsFragment.setInternet(isNetworkAvailable());
+        //send reference of this activity to others
+        HomeFragment.setActivity(this);
         WifiController.setActivity(this);
         MapsFragment.setActivity(this);
-
+        WifiLocator.setActivity(this);
+        NavigationContoller.setActivity(this);
+        SettingsFragment.setActivity(this);
+        MapOptionsFragment.setActivity(this);
+        WifiOptionsFragment.setActivity(this);
+        WifiNetwork.setActivity(this);
+        OnlineDatabaseController.setActivity(this);
         // create an DatabaseController object
-        dbControlller = new DatabaseController(this,null,null,1);
+        dbController = new DatabaseController(this,null,null,1);
 
         // bottom navigation implementation
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
@@ -149,6 +172,36 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    @Override
+    public void onBackPressed() {
+
+//        View view2= LayoutInflater.from(this).inflate(R.layout.wifi_rate,null);
+        final AlertDialog.Builder alertBuilder = new  AlertDialog.Builder(this);
+//        alertBuilder.setView(view2);
+        alertBuilder.setIcon(R.drawable.ic_exit);
+        alertBuilder.setMessage("Are you sure you want to exit?");
+        alertBuilder.setTitle("Confirm Exit!");
+
+//        ratingBar = (RatingBar) view2.findViewById(R.id.ratingBar);
+        alertBuilder.setCancelable(true).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                                    DatabaseController dbc= MainActivity.dbController;
+
+            }
+        });
+        alertBuilder.setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                                    DatabaseController dbc= MainActivity.dbController;
+                finish();
+            }
+        });
+        Dialog dialog =alertBuilder.create();
+        dialog.show();
+
+    }
+
     // hide wifiOptions Fragment
     private void hideOptions(){
         FragmentManager manager = getSupportFragmentManager();
@@ -156,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
 //
         transaction.hide(manager.findFragmentByTag("MapOptionsFragment"));
         transaction.hide(manager.findFragmentByTag("wifiOptionsFragment"));
-//        transaction.hide(manager.findFragmentByTag("MapsFragment"));
+        transaction.hide(manager.findFragmentByTag("MapsFragment"));
+        transaction.hide(manager.findFragmentByTag("SettingsFragment"));
         transaction.commit();
     }
 
@@ -182,7 +236,28 @@ public class MainActivity extends AppCompatActivity {
         return mapFragment;
     }
 
+    public boolean isNetworkAvailable(){
+        ConnectivityManager cm =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
+    }
+//    public boolean isNetworkAvailable(){
+//        try{
+//            InetAddress address = InetAddress.getByName("www.google.com");
+//            return !address.equals("");
+//        }catch (UnknownHostException e){
+//
+//        }
+//        return false;
+//    }
+//    public boolean isNetworkAvailable(){
+//        String command ="ping -c 1 google.com";
+//        return Runtime.getRuntime().exec(command).waitFor()==0;
+//    }
 
+    public boolean isGpsAvailable(){
+        LocationManager lm =(LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
 ////    @Override
 //    public String getwifiDetails() {
 //        wifiInfo =wifiManager.getConnectionInfo();

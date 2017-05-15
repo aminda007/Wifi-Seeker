@@ -24,6 +24,7 @@ import com.codemo.www.wifiseeker.R;
 //import com.google.android.gms.identity.intents.Address;
 import com.codemo.www.wifiseeker.controller.DatabaseController;
 import com.codemo.www.wifiseeker.controller.MapController;
+import com.codemo.www.wifiseeker.controller.NavigationContoller;
 import com.codemo.www.wifiseeker.controller.OnlineDatabaseController;
 import com.codemo.www.wifiseeker.model.MyClusterRenderer;
 import com.codemo.www.wifiseeker.model.MyItem;
@@ -49,6 +50,8 @@ import static com.codemo.www.wifiseeker.view.MainActivity.manager;
 
 public class MapsFragment extends Fragment  implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     GoogleMap mgoogleMap;
+    private static boolean internet;
+    private static boolean markerSet;
     static MainActivity Activity;
     GoogleApiClient mGoogleApiClient;
     Boolean autoLocate;
@@ -58,6 +61,23 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
 
     public MapsFragment() {
         // Required empty public constructor
+    }
+
+    public static boolean isInternet() {
+        return internet;
+    }
+
+    public static void setInternet(boolean internet) {
+        MapsFragment.internet = internet;
+    }
+
+
+    public static boolean isMarkerSet() {
+        return markerSet;
+    }
+
+    public static void setMarkerSet(boolean markerSet) {
+        MapsFragment.markerSet = markerSet;
     }
 
 
@@ -77,6 +97,7 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....map fragment created....aaaaaaaaaaaaaaaaaaaaaa***");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         final SearchView searchBar = (SearchView) view.findViewById(R.id.searchBar);
@@ -115,11 +136,16 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
                 new Button.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        if(autoLocate){
-                            disableAutoLocate();
-                        }else {
-                            enableAutoLocate();
+                        if(Activity.isGpsAvailable()){
+                            if(autoLocate){
+                                disableAutoLocate();
+                            }else {
+                                enableAutoLocate();
+                            }
+                        }else{
+                            Toast.makeText(getContext(),"enable location services", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 }
         );
@@ -128,9 +154,16 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
                     @Override
                     public void onClick(View v) {
 //                        mgoogleMap.clear();
-//                        mClusterManager.clearItems();
+
 //                        mgoogleMap.clear();
-                        getLocations();
+                        if(Activity.isNetworkAvailable()){
+
+                            mClusterManager.clearItems();
+//                            mClusterManager.getMarkerCollection().clear();
+                            getLocations();
+                        }else{
+                            Toast.makeText(getContext(),"Connect to internet and try again", Toast.LENGTH_SHORT).show();
+                        }
 //                        new OnlineDbController().selectLocations();
                     }
                 }
@@ -157,6 +190,7 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mgoogleMap=googleMap;
+        mgoogleMap.getUiSettings().setMapToolbarEnabled(false);
 //        gotoLocation(6.7967473,79.8982529,15);
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addApi(LocationServices.API)
@@ -182,14 +216,25 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
                 Log.v("rht","aaaaaaaaaaaaaaaaaaaa....1 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
 
                 Log.v("rht","aaaaaaaaaaaaaaaaaaaa.... 2 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-                OnlineDatabaseController network=new OnlineDatabaseController("getDetails");
-                network.execute(myItem.getId().toString());
-//                MapOptionsFragment mapOptionsFragment = (MapOptionsFragment)manager.findFragmentByTag("MapOptionsFragment") ;
+        //        OnlineDatabaseController network=new OnlineDatabaseController("getDetails");
+        //        network.execute(myItem.getId().toString());
+                MapOptionsFragment mapOptionsFragment = (MapOptionsFragment)manager.findFragmentByTag("MapOptionsFragment") ;
 //                Log.v("rht","aaaaaaaaaaaaaaaaaaaa....3 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-////                mapOptionsFragment.setId(myItem.getId());
+                mapOptionsFragment.setId(myItem.getId().toString());
+           //     mapOptionsFragment.setRating(myItem.get.toString());
+                mapOptionsFragment.setLat(String.valueOf(myItem.getPosition().latitude));
+                mapOptionsFragment.setLng(String.valueOf(myItem.getPosition().longitude));
+                mapOptionsFragment.setRating(String.valueOf(myItem.getRating()));
+                mapOptionsFragment.setReport(String.valueOf(myItem.getReport()));
+                mapOptionsFragment.setName(myItem.getMname());
+                if(myItem.isOpen()){
+                    mapOptionsFragment.setOpen("open");
+                }else {
+                    mapOptionsFragment.setOpen("secured");
+                }
 ////                mapOptionsFragment.setDetails();
 //                Log.v("rht","aaaaaaaaaaaaaaaaaaaa...4.clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-////                NavigationContoller.navigateTo("MapOptionsFragment",manager);
+                NavigationContoller.navigateTo("MapOptionsFragment",manager);
 //                FragmentTransaction transaction = manager.beginTransaction();
 //                transaction.hide(manager.findFragmentByTag("MapsFragment"));
 //                transaction.show(manager.findFragmentByTag("MapOptionsFragment"));
@@ -201,14 +246,20 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
 
             }
         });
+        Log.v("rht","aaaaaaaaaaaaaaaaaaaa... end of on item click ....aaaaaaaaaaaaaaaaaaaaaa**********");
 //        setUpOpenClusterer();
-        getLocations();
+        if(isInternet()){
+            getLocations();
+            setMarkerSet(true);
+        }
+
 
 
     }
 
     public void getLocations(){
-        //DatabaseController dbc= MainActivity.dbControlller;
+        setMarkerSet(true);
+        //DatabaseController dbc= MainActivity.dbController;
         OnlineDatabaseController network=new OnlineDatabaseController("getAll");
         network.execute();
 
@@ -248,9 +299,9 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
         MyItem offsetItem;
 //        LatLng ll = new LatLng(Double.parseDouble(locationInfo[2]),Double.parseDouble(locationInfo[3]));
         if(locationInfo[4].contains("1")) {
-            offsetItem = new MyItem(Integer.parseInt(locationInfo[0]),Double.parseDouble(locationInfo[2]), Double.parseDouble(locationInfo[3]), true);
+            offsetItem = new MyItem(Integer.parseInt(locationInfo[0]),locationInfo[1],Double.parseDouble(locationInfo[2]), Double.parseDouble(locationInfo[3]), true, Double.parseDouble(locationInfo[5]),Integer.parseInt(locationInfo[6]));
         }else{
-            offsetItem = new MyItem(Integer.parseInt(locationInfo[0]),Double.parseDouble(locationInfo[2]), Double.parseDouble(locationInfo[3]), false);
+            offsetItem = new MyItem(Integer.parseInt(locationInfo[0]),locationInfo[1],Double.parseDouble(locationInfo[2]), Double.parseDouble(locationInfo[3]), false, Double.parseDouble(locationInfo[5]),Integer.parseInt(locationInfo[6]));
         }
         Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....marker info ....aaaaaaaaaaaaaaaaaaaaaa*************** "+ locationInfo[0]+" "+locationInfo[1]+" "+locationInfo[2]+" "+locationInfo[3]+" "+locationInfo[4]+" "+locationInfo[5]+" "+locationInfo[6]);
         mClusterManager.addItem(offsetItem);
@@ -320,16 +371,18 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(1000);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest,this);
+        Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....location connected....aaaaaa");
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....location failed ....aaaaaa");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(getContext(),"connection failed", Toast.LENGTH_SHORT).show();
+        Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....location failed ....aaaaaa");
     }
 
     @Override
@@ -337,7 +390,7 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
         if(location==null){
             Toast.makeText(getContext(),"Cannot get current location", Toast.LENGTH_SHORT).show();
         }else{
-            //            Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....location updated ....aaaaaaaaaaaaaaaaaaaaaa***************"+ );
+                        Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....location updated ....aaaaaaaaaaaaaaaaaaaaaa***************"+location.getLatitude()+"..."+location.getLongitude());
             MapController.updateLocation(location.getLatitude(),location.getLongitude());
             if(autoLocate){
                 LatLng ll = new LatLng(location.getLatitude(),location.getLongitude());

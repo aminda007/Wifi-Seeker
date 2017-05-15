@@ -1,11 +1,14 @@
 package com.codemo.www.wifiseeker.controller;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.Toast;
 
 
+import com.codemo.www.wifiseeker.view.HomeFragment;
+import com.codemo.www.wifiseeker.view.MainActivity;
 import com.codemo.www.wifiseeker.view.MapOptionsFragment;
 import com.codemo.www.wifiseeker.view.MapsFragment;
 import com.codemo.www.wifiseeker.view.WifiOptionsFragment;
@@ -39,9 +42,16 @@ public class OnlineDatabaseController extends AsyncTask<String,String,String> {
 
 
     String operation;
+    boolean empty;
+    private ProgressDialog dialog;
+    private static  MainActivity activity;
 
     public OnlineDatabaseController(String operation){
         this.operation=operation;
+    }
+
+    public static void setActivity(MainActivity activity) {
+        OnlineDatabaseController.activity = activity;
     }
 
 
@@ -49,7 +59,9 @@ public class OnlineDatabaseController extends AsyncTask<String,String,String> {
     protected String doInBackground(String... params) {
         String login_url;
 
-        login_url= "http://10.42.0.1/test/userNames.php";
+
+        login_url= "http://wifiseeker.eu.pn/";
+//        login_url= "http://10.42.0.1/test/userNames.php";
 
 
         URL url = null;
@@ -85,6 +97,9 @@ public class OnlineDatabaseController extends AsyncTask<String,String,String> {
             }
             if(operation=="getAll"){
                 post_data= URLEncoder.encode("operation","UTF-8")+"="+URLEncoder.encode(operation,"UTF-8");
+            }
+            if(operation=="getData"){
+                post_data= URLEncoder.encode("operation","UTF-8")+"="+URLEncoder.encode("getAll","UTF-8");
             }
             if(operation=="getNameList"){
 
@@ -135,6 +150,13 @@ public class OnlineDatabaseController extends AsyncTask<String,String,String> {
             inputStream.close();
             httpURLConnection.disconnect();
 //            String[] mainResult = {result};
+            if(result.contains("[]")){
+                empty=true;
+                Log.v("bn**d","iiiiiiiiiiiiii  no resulsts iiiiiiiiiiiiiiiiiiiiiii");
+            }else{
+                empty=false;
+                Log.v("bn**d","iiiiiiiiiiiiii  results avaialble  iiiiiiiiiiiiiiiiiiiiiii");
+            }
             Log.v("gfhjk",result);
             return result;
         } catch (MalformedURLException e) {
@@ -155,17 +177,28 @@ public class OnlineDatabaseController extends AsyncTask<String,String,String> {
 
     @Override
     protected void onPreExecute() {
+        dialog = new ProgressDialog(activity);
+        this.dialog.setMessage("Please Wait!!");
+        this.dialog.setCancelable(false);
+        this.dialog.show();
         super.onPreExecute();
     }
 
 
     @Override
     protected void onPostExecute(String s) {
+
         super.onPostExecute(s);
+        JSONArray ja=null;
         try {
-            JSONObject j = new JSONObject(s);
-            JSONArray ja= j.getJSONArray("data");
-            JSONObject jj = ja.getJSONObject(0);
+            if(empty){
+                Log.v("bn**d","iiiiiiiiiiiiii  connection lost or no resulsts iiiiiiiiiiiiiiiiiiiiiii");
+            }else{
+                JSONObject j = new JSONObject(s);
+                ja= j.getJSONArray("data");
+                JSONObject jj = ja.getJSONObject(0);
+            }
+
             if(operation=="shared"){
 //                Toast.makeText(main2Activity.getApplicationContext(),"shared", Toast.LENGTH_SHORT).show();
             }else if(operation=="getAll"){
@@ -191,60 +224,11 @@ public class OnlineDatabaseController extends AsyncTask<String,String,String> {
                 }
 //                main2Activity.testTxt.setText(jj.getString("name")+jj.getString("open"));
 //                Log.v("bnd",jj.getString("name"));
-            }
-            else if(operation=="getNameList"){
-                Log.v("gfhjk","fffffffffffffffffffffff inside get name listfffffffffffffffffffff");
+            }else if(operation=="getData"){
                 ArrayList<String[]> locationList = new ArrayList<>();
-                for(int i=0; i<ja.length();i++){
-                    String[] locationDetails = new String[3];
-                    locationDetails[0]=ja.getJSONObject(i).getString("id");
-                    locationDetails[1]=ja.getJSONObject(i).getString("lat");
-                    locationDetails[2]=ja.getJSONObject(i).getString("lng");
-                    locationList.add(locationDetails);
-                    Log.v("bn**d","iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+ja.getJSONObject(i).getString("name"));
-                }
-                WifiOptionsFragment fragment =(WifiOptionsFragment) manager.findFragmentByTag("wifiOptionsFragment");
-                fragment.setWifiNameList(locationList);
-                fragment.share();
 
-            }
-            else if(operation=="updateRating"){
-                Log.v("gfhjk","fffffffffffffffffffffff inside update rating fffffffffffffffffffff");
-                ArrayList<String[]> locationList = new ArrayList<>();
                 for(int i=0; i<ja.length();i++){
-                    String[] locationDetails = new String[4];
-                    locationDetails[0]=ja.getJSONObject(i).getString("id");
-                    locationDetails[1]=ja.getJSONObject(i).getString("lat");
-                    locationDetails[2]=ja.getJSONObject(i).getString("lng");
-                    locationDetails[3]=ja.getJSONObject(i).getString("rating");
-                    locationList.add(locationDetails);
-                    Log.v("bn**d","iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+ja.getJSONObject(i).getString("name"));
-                }
-                WifiOptionsFragment fragment =(WifiOptionsFragment) manager.findFragmentByTag("wifiOptionsFragment");
-                fragment.setWifiNameList(locationList);
-                fragment.rate();
-
-            }else if(operation=="updateReport"){
-                Log.v("gfhjk","fffffffffffffffffffffff inside updatereporting fffffffffffffffffffff");
-                ArrayList<String[]> locationList = new ArrayList<>();
-                for(int i=0; i<ja.length();i++){
-                    String[] locationDetails = new String[4];
-                    locationDetails[0]=ja.getJSONObject(i).getString("id");
-                    locationDetails[1]=ja.getJSONObject(i).getString("lat");
-                    locationDetails[2]=ja.getJSONObject(i).getString("lng");
-                    locationDetails[3]=ja.getJSONObject(i).getString("report");
-                    locationList.add(locationDetails);
-                    Log.v("bn**d","iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+ja.getJSONObject(i).getString("name"));
-                }
-                WifiOptionsFragment fragment =(WifiOptionsFragment) manager.findFragmentByTag("wifiOptionsFragment");
-                fragment.setWifiNameList(locationList);
-                fragment.report();
-
-            }
-            else if(operation=="getDetails"){
-                String[] locationDetails = new String[7];
-                for(int i=0; i<ja.length();i++){
-
+                    String[] locationDetails = new String[9];
                     locationDetails[0]=ja.getJSONObject(i).getString("id");
                     locationDetails[1]=ja.getJSONObject(i).getString("name");
                     locationDetails[2]=ja.getJSONObject(i).getString("lat");
@@ -252,24 +236,120 @@ public class OnlineDatabaseController extends AsyncTask<String,String,String> {
                     locationDetails[4]=ja.getJSONObject(i).getString("open");
                     locationDetails[5]=ja.getJSONObject(i).getString("rating");
                     locationDetails[6]=ja.getJSONObject(i).getString("report");
+                    locationDetails[7]=ja.getJSONObject(i).getString("linkspeed");
+                    locationList.add(locationDetails);
                     Log.v("bn**d","iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+ja.getJSONObject(i).getString("name"));
                 }
-                MapOptionsFragment fragment = (MapOptionsFragment) manager.findFragmentByTag("MapOptionsFragment");
-                fragment.setDetails(locationDetails);
-//                MapOptionsFragment mapOptionsFragment = (MapOptionsFragment)manager.findFragmentByTag("MapOptionsFragment") ;
-//                Log.v("rht","aaaaaaaaaaaaaaaaaaaa....3 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-//                mapOptionsFragment.setId(myItem.getId());
-//                mapOptionsFragment.setDetails();
-//                Log.v("rht","aaaaaaaaaaaaaaaaaaaa...4.clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-//                NavigationContoller.navigateTo("MapOptionsFragment",manager);
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.hide(manager.findFragmentByTag("MapsFragment"));
-                transaction.show(manager.findFragmentByTag("MapOptionsFragment"));
-                transaction.commit();
+                HomeFragment homeFragment =(HomeFragment) manager.findFragmentByTag("HomeFragment");
+                homeFragment.setLocations(locationList);
             }
+            else if(operation=="getNameList"){
+                WifiOptionsFragment fragment =(WifiOptionsFragment) manager.findFragmentByTag("wifiOptionsFragment");
 
-        } catch (JSONException e) {
+                Log.v("gfhjk","fffffffffffffffffffffff inside get name listfffffffffffffffffffff");
+                if(empty){
+                    fragment.setExist(false);
+                    fragment.share();
+                }else{
+                    ArrayList<String[]> locationList = new ArrayList<>();
+                    for(int i=0; i<ja.length();i++){
+                        String[] locationDetails = new String[3];
+                        locationDetails[0]=ja.getJSONObject(i).getString("id");
+                        locationDetails[1]=ja.getJSONObject(i).getString("lat");
+                        locationDetails[2]=ja.getJSONObject(i).getString("lng");
+                        locationList.add(locationDetails);
+                        Log.v("bn**d","iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+ja.getJSONObject(i).getString("name"));
+                    }
+                    fragment.setWifiNameList(locationList);
+                    fragment.setExist(true);
+                    fragment.share();
+                }
+
+
+            }
+            else if(operation=="updateRating"){
+                WifiOptionsFragment fragment =(WifiOptionsFragment) manager.findFragmentByTag("wifiOptionsFragment");
+                if(empty){
+                    fragment.setExist(false);
+                    fragment.rate();
+                }else{
+                    Log.v("gfhjk","fffffffffffffffffffffff inside update rating fffffffffffffffffffff");
+                    ArrayList<String[]> locationList = new ArrayList<>();
+                    for(int i=0; i<ja.length();i++){
+                        String[] locationDetails = new String[4];
+                        locationDetails[0]=ja.getJSONObject(i).getString("id");
+                        locationDetails[1]=ja.getJSONObject(i).getString("lat");
+                        locationDetails[2]=ja.getJSONObject(i).getString("lng");
+                        locationDetails[3]=ja.getJSONObject(i).getString("rating");
+                        locationList.add(locationDetails);
+                        Log.v("bn**d","iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+ja.getJSONObject(i).getString("name"));
+                    }
+//                    WifiOptionsFragment fragment =(WifiOptionsFragment) manager.findFragmentByTag("wifiOptionsFragment");
+                    fragment.setWifiNameList(locationList);
+                    fragment.setExist(true);
+                    fragment.rate();
+                }
+
+
+
+            }else if(operation=="updateReport"){
+                WifiOptionsFragment fragment =(WifiOptionsFragment) manager.findFragmentByTag("wifiOptionsFragment");
+                if(empty){
+                    fragment.setExist(false);
+                    fragment.rate();
+                }else{
+                    Log.v("gfhjk","fffffffffffffffffffffff inside updatereporting fffffffffffffffffffff");
+                    ArrayList<String[]> locationList = new ArrayList<>();
+                    for(int i=0; i<ja.length();i++){
+                        String[] locationDetails = new String[4];
+                        locationDetails[0]=ja.getJSONObject(i).getString("id");
+                        locationDetails[1]=ja.getJSONObject(i).getString("lat");
+                        locationDetails[2]=ja.getJSONObject(i).getString("lng");
+                        locationDetails[3]=ja.getJSONObject(i).getString("report");
+                        locationList.add(locationDetails);
+                        Log.v("bn**d","iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+ja.getJSONObject(i).getString("name"));
+                    }
+
+                    fragment.setWifiNameList(locationList);
+                    fragment.setExist(true);
+                    fragment.report();
+                }
+
+
+            }
+//            else if(operation=="getDetails"){
+//                String[] locationDetails = new String[7];
+//                for(int i=0; i<ja.length();i++){
+//
+//                    locationDetails[0]=ja.getJSONObject(i).getString("id");
+//                    locationDetails[1]=ja.getJSONObject(i).getString("name");
+//                    locationDetails[2]=ja.getJSONObject(i).getString("lat");
+//                    locationDetails[3]=ja.getJSONObject(i).getString("lng");
+//                    locationDetails[4]=ja.getJSONObject(i).getString("open");
+//                    locationDetails[5]=ja.getJSONObject(i).getString("rating");
+//                    locationDetails[6]=ja.getJSONObject(i).getString("report");
+//                    Log.v("bn**d","iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"+ja.getJSONObject(i).getString("name"));
+//                }
+//                MapOptionsFragment fragment = (MapOptionsFragment) manager.findFragmentByTag("MapOptionsFragment");
+//                fragment.setDetails(locationDetails);
+////                MapOptionsFragment mapOptionsFragment = (MapOptionsFragment)manager.findFragmentByTag("MapOptionsFragment") ;
+////                Log.v("rht","aaaaaaaaaaaaaaaaaaaa....3 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
+////                mapOptionsFragment.setId(myItem.getId());
+////                mapOptionsFragment.setDetails();
+////                Log.v("rht","aaaaaaaaaaaaaaaaaaaa...4.clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
+////                NavigationContoller.navigateTo("MapOptionsFragment",manager);
+//                FragmentTransaction transaction = manager.beginTransaction();
+//                transaction.hide(manager.findFragmentByTag("MapsFragment"));
+//                transaction.show(manager.findFragmentByTag("MapOptionsFragment"));
+//                transaction.commit();
+//            }
+
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
+            Log.v("bn**d","iiiiiiiiiiiiiii///////////////////////*************////////////////////////////////iiiiiiiiiiiiiiiiiiiiii");
+        }
+        if (dialog.isShowing()) {
+            dialog.dismiss();
         }
 
 

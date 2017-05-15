@@ -38,7 +38,7 @@ public class WifiOptionsController extends AppCompatActivity {
     }
     // create the dialog box containing ifi network details
     public static void showWifiDialog(Integer position, Boolean open){
-        Log.v("rht","aaaaaaaaaaa  inside Wifioptions Contoller show wifi dialog aaaaaaaaaaaaaaaa"+position+"swdd"+open );
+        Log.v("rht","aaaaaaaaaaa  inside WifiOptions Controller show wifi dialog aaaaaaaaaaaaaaaa"+position+"swdd"+open );
 
         AlertDialog.Builder builder = new AlertDialog.Builder(manager.findFragmentByTag("wifiOptionsFragment").getActivity());
         View mview =  LayoutInflater.from(manager.findFragmentByTag("wifiOptionsFragment").getActivity()).inflate(R.layout.wifi_option_item,null);

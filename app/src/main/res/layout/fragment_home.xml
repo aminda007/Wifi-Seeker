@@ -70,8 +70,8 @@
         app:cardBackgroundColor="@color/cast_expanded_controller_ad_container_white_stripe_color"
         android:paddingTop="0dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:layout_height="41dp">
 
         <Button

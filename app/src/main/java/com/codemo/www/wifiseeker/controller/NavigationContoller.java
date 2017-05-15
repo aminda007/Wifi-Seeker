@@ -2,11 +2,13 @@ package com.codemo.www.wifiseeker.controller;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.codemo.www.wifiseeker.R;
 import com.codemo.www.wifiseeker.view.*;
 
+import static com.codemo.www.wifiseeker.view.MainActivity.manager;
 import static com.codemo.www.wifiseeker.view.MainActivity.wifiManager;
 
 /**
@@ -14,6 +16,8 @@ import static com.codemo.www.wifiseeker.view.MainActivity.wifiManager;
  */
 
 public class NavigationContoller {
+    private static MainActivity activity;
+
 
     public static void navigateTo(String backStateName ,FragmentManager manager){
         FragmentTransaction transaction = manager.beginTransaction();
@@ -47,6 +51,16 @@ public class NavigationContoller {
             if (manager.findFragmentByTag(backStateName) == null) {
                 transaction.add(R.id.activity_main, new MapsFragment(), backStateName);
             }else{
+                if(MapsFragment.isMarkerSet()){
+
+                }else{
+                    if(activity.isNetworkAvailable()){
+                        MapsFragment fragment =(MapsFragment) manager.findFragmentByTag("MapsFragment");
+                        fragment.getLocations();
+                    }else{
+                        Toast.makeText(activity.getApplicationContext(), "Connect to internet to see networks" ,Toast.LENGTH_LONG).show();
+                    }
+                }
                 transaction.show(manager.findFragmentByTag(backStateName));
             }
             if(manager.findFragmentByTag("HomeFragment") != null){
@@ -69,8 +83,12 @@ public class NavigationContoller {
 //            wifiManager.startScan();
             if (manager.findFragmentByTag(backStateName) == null) {
                 transaction.add(R.id.activity_main, new SettingsFragment(), backStateName);
+                SettingsFragment fragment =(SettingsFragment) manager.findFragmentByTag("SettingsFragment");
+                fragment.setSwitches();
             } else {
                 transaction.show(manager.findFragmentByTag(backStateName));
+                SettingsFragment fragment =(SettingsFragment) manager.findFragmentByTag("SettingsFragment");
+                fragment.setSwitches();
             }
             if(manager.findFragmentByTag("HomeFragment") != null){
                 transaction.hide(manager.findFragmentByTag("HomeFragment"));
@@ -137,6 +155,7 @@ public class NavigationContoller {
             if (manager.findFragmentByTag(backStateName) == null) {
                 transaction.add(R.id.activity_main, new MapOptionsFragment(), backStateName);
             } else {
+                Log.v("rht","aaaaaaaaaaaaaaaaaaaa... showing map options...aaaaaaaaaaaaaaaaaaaaaa**********");
                 transaction.show(manager.findFragmentByTag(backStateName));
             }
             if(manager.findFragmentByTag("HomeFragment") != null){
@@ -148,7 +167,7 @@ public class NavigationContoller {
                 transaction.hide(manager.findFragmentByTag("wifiConnnectFragment"));
             }
             if(manager.findFragmentByTag("wifiOptionsFragment") != null){
-                transaction.hide(manager.findFragmentByTag("wifiConnnectFragment"));
+                transaction.hide(manager.findFragmentByTag("wifiOptionsFragment"));
             }
             if(manager.findFragmentByTag("SettingsFragment") != null) {
                 transaction.hide(manager.findFragmentByTag("SettingsFragment"));
@@ -156,5 +175,9 @@ public class NavigationContoller {
         }
         transaction.commit();
 
+    }
+
+    public static void setActivity(MainActivity activity) {
+        NavigationContoller.activity = activity;
     }
 }
