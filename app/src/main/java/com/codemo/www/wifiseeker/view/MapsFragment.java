@@ -37,7 +37,10 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 
@@ -50,6 +53,8 @@ import static com.codemo.www.wifiseeker.view.MainActivity.manager;
 
 public class MapsFragment extends Fragment  implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     GoogleMap mgoogleMap;
+    Marker myMarker;
+    Marker findMarker;
     private static boolean internet;
     private static boolean markerSet;
     static MainActivity Activity;
@@ -153,30 +158,17 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
                 new Button.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-//                        mgoogleMap.clear();
-
-//                        mgoogleMap.clear();
                         if(Activity.isNetworkAvailable()){
-
+                            HomeFragment homeFragment =(HomeFragment) manager.findFragmentByTag("HomeFragment");
+                            homeFragment.initLocator();
                             mClusterManager.clearItems();
-//                            mClusterManager.getMarkerCollection().clear();
                             getLocations();
                         }else{
                             Toast.makeText(getContext(),"Connect to internet and try again", Toast.LENGTH_SHORT).show();
                         }
-//                        new OnlineDbController().selectLocations();
                     }
                 }
         );
-//        mgoogleMap.setOnMarkerClickListener(new OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//                int position = (int)(marker.getTag());
-//                //Using position get Value from arraylist
-//                Toast.makeText(getContext(),"marker clicked"+marker.getPosition().toString()+marker.getTitle(), Toast.LENGTH_SHORT).show();
-//                return false;
-//            }
-//        });
         return view;
     }
 
@@ -200,6 +192,12 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
         mGoogleApiClient.connect();
 
         setUpClusterer();
+        mgoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                findMarker.setVisible(false);
+            }
+        });
         mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MyItem>() {
             @Override
             public boolean onClusterClick(Cluster<MyItem> cluster) {
@@ -212,12 +210,6 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
             @Override
             public boolean onClusterItemClick(MyItem myItem) {
-                Toast.makeText(getContext(),"marker clicked", Toast.LENGTH_SHORT).show();
-                Log.v("rht","aaaaaaaaaaaaaaaaaaaa....1 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-
-                Log.v("rht","aaaaaaaaaaaaaaaaaaaa.... 2 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
-        //        OnlineDatabaseController network=new OnlineDatabaseController("getDetails");
-        //        network.execute(myItem.getId().toString());
                 MapOptionsFragment mapOptionsFragment = (MapOptionsFragment)manager.findFragmentByTag("MapOptionsFragment") ;
 //                Log.v("rht","aaaaaaaaaaaaaaaaaaaa....3 clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
                 mapOptionsFragment.setId(myItem.getId().toString());
@@ -232,14 +224,7 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
                 }else {
                     mapOptionsFragment.setOpen("secured");
                 }
-////                mapOptionsFragment.setDetails();
-//                Log.v("rht","aaaaaaaaaaaaaaaaaaaa...4.clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
                 NavigationContoller.navigateTo("MapOptionsFragment",manager);
-//                FragmentTransaction transaction = manager.beginTransaction();
-//                transaction.hide(manager.findFragmentByTag("MapsFragment"));
-//                transaction.show(manager.findFragmentByTag("MapOptionsFragment"));
-//                transaction.commit();
-
                 Log.v("rht","aaaaaaaaaaaaaaaaaaaa...5.clicked item id....aaaaaaaaaaaaaaaaaaaaaa***************"+myItem.getId());
 
                 return false;
@@ -247,7 +232,6 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
             }
         });
         Log.v("rht","aaaaaaaaaaaaaaaaaaaa... end of on item click ....aaaaaaaaaaaaaaaaaaaaaa**********");
-//        setUpOpenClusterer();
         if(isInternet()){
             getLocations();
             setMarkerSet(true);
@@ -256,16 +240,16 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
 
 
     }
+    public void setFindMarker(double lat, double lng){
+        LatLng ll = new LatLng(lat,lng);
+        MarkerOptions options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_find_loc));
+        findMarker = mgoogleMap.addMarker(options);
+    }
 
     public void getLocations(){
         setMarkerSet(true);
-        //DatabaseController dbc= MainActivity.dbController;
         OnlineDatabaseController network=new OnlineDatabaseController("getAll");
         network.execute();
-
-//        dbc.addLocation(location);
-//        String[] locationList = dbc.databaseTOString();
-
     }
     public ArrayList<String[]> getlocationList(){
         return locationList;
@@ -285,19 +269,13 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
 
     public void gotoLocation(double lat, double lng, float zoom){
         LatLng ll = new LatLng(lat,lng);
-//        LatLng ll1 = new LatLng(6.7975463,79.8995939);
-//        LatLng ll2 = new LatLng(6.795755, 79.901080);
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, zoom);
         mgoogleMap.moveCamera(update);
-//        mgoogleMap.addMarker(new MarkerOptions().title("CSE").position(ll).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_wifi_blue_full)));
-//        mgoogleMap.addMarker(new MarkerOptions().title("CSE").position(ll1).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_wifi_red_full)));
-//        mgoogleMap.addMarker(new MarkerOptions().title("CSE").position(ll2).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_wifi_blue_full)));
     }
 
     // Add cluster items (markers) to the cluster manager.
     public void showLocations(String[] locationInfo){
         MyItem offsetItem;
-//        LatLng ll = new LatLng(Double.parseDouble(locationInfo[2]),Double.parseDouble(locationInfo[3]));
         if(locationInfo[4].contains("1")) {
             offsetItem = new MyItem(Integer.parseInt(locationInfo[0]),locationInfo[1],Double.parseDouble(locationInfo[2]), Double.parseDouble(locationInfo[3]), true, Double.parseDouble(locationInfo[5]),Integer.parseInt(locationInfo[6]));
         }else{
@@ -308,7 +286,6 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
     }
 
     public  void geoLocate(String location) throws  IOException{
-//        String location = query;
         Geocoder gc = new Geocoder(getContext());
         List<Address> list =gc.getFromLocationName(location, 1);
         Address address = list.get(0);
@@ -321,14 +298,8 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
     }
 
     private void setUpClusterer() {
-
-        // Initialize the manager with the context and the map.
-        // (Activity extends context, so we can pass 'this' in the constructor.)
         mClusterManager = new ClusterManager<MyItem>(getContext(), mgoogleMap);
         mClusterManager.setRenderer(new MyClusterRenderer(getContext(), mgoogleMap, mClusterManager));
-        // Point the map's listeners at the listeners implemented by the cluster
-        // manager.
-//        mgoogleMap.moveCamera();
         mgoogleMap.setOnCameraIdleListener(mClusterManager);
         mgoogleMap.setOnMarkerClickListener(mClusterManager);
 
@@ -393,9 +364,22 @@ public class MapsFragment extends Fragment  implements OnMapReadyCallback, Googl
                         Log.v("rht","aaaaaaaaaaaaaaaaaaaa.....location updated ....aaaaaaaaaaaaaaaaaaaaaa***************"+location.getLatitude()+"..."+location.getLongitude());
             MapController.updateLocation(location.getLatitude(),location.getLongitude());
             if(autoLocate){
+
                 LatLng ll = new LatLng(location.getLatitude(),location.getLongitude());
-                CameraUpdate update =CameraUpdateFactory.newLatLngZoom(ll,15);
+                MarkerOptions options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location));
+
+                if(myMarker == null){
+                    myMarker = mgoogleMap.addMarker(options);
+                }
+                else {
+                    myMarker.setPosition(new LatLng(location.getLatitude(),location.getLongitude()));
+                }
+                CameraUpdate update =CameraUpdateFactory.newLatLngZoom(ll,20);
                 mgoogleMap.animateCamera(update);
+            }else{
+                if(myMarker!=null){
+                    myMarker.setVisible(false);
+                }
             }
 
         }

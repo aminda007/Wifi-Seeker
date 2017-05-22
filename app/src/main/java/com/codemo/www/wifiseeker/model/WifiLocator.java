@@ -46,7 +46,7 @@ public class WifiLocator {
 
     }
 
-    public void getWifi(){
+    public void getWifi(){   // calculate the result and send result to MapFragment
         ArrayList<String[]> inRangeList =getInRangeList();
         if(inRangeList.isEmpty()){
             Toast.makeText(Activity.getApplicationContext(),"Try again after increasing the search range", Toast.LENGTH_SHORT).show();
@@ -57,12 +57,12 @@ public class WifiLocator {
             NavigationContoller.navigateTo("MapsFragment",manager);
             MapsFragment fragment =(MapsFragment) manager.findFragmentByTag("MapsFragment");
             fragment.gotoLocation(Double.parseDouble(result[2]),Double.parseDouble(result[3]),25);
+            fragment.setFindMarker(Double.parseDouble(result[2]),Double.parseDouble(result[3]));
         }
 
     }
 
-    private ArrayList<String[]> getInRangeList(){
-
+    public ArrayList<String[]> getInRangeList(){   //  Get the locations within the search range
         float[] results = new float[1];
         results[0]=100;
         ArrayList<String[]> inRange= new ArrayList<>();
@@ -72,13 +72,13 @@ public class WifiLocator {
             if(results[0]<range){
                 i[8]=String.valueOf(results[0]);
                 inRange.add(i);
-//                break;
             }
         }
         return  inRange;
     }
 
-    private ArrayList<Double[]> getScoredList(ArrayList<String[]> list) {
+    public ArrayList<Double[]> getScoredList(ArrayList<String[]> list) {   // Sort the list of locations
+        Log.v("rht","xxxxxxxxxxxxxx.... in side get score list ");
         ArrayList<Double[]> scoredList = new ArrayList<>(list.size());
         Double[] scoredItem = new Double[2];
         for(String[] i :list){
@@ -90,9 +90,11 @@ public class WifiLocator {
             scoredList.add(scoredItem);
         }
         return scoredList;
+
     }
 
-    private ArrayList<Double[]> getSortedList(ArrayList<Double[]> list){
+    public ArrayList<Double[]> getSortedList(ArrayList<Double[]> list){
+        Log.v("rht","xxxxxxxxxxxxxx.... in side get Sorted list ");
         int i, j;
         double temp;
         double tempId;
@@ -120,7 +122,8 @@ public class WifiLocator {
         return list;
     }
 
-    private String[] getResult(ArrayList<Double[]> list){
+    public String[] getResult(ArrayList<Double[]> list){
+        Log.v("rht","xxxxxxxxxxxxxx....  in side get Result");
         String[] result =null;
         for(Double[] j : list){
             for(String[] i : getInRangeList()){
@@ -133,7 +136,6 @@ public class WifiLocator {
                 }
             }
         }
-
         return result;
     }
 

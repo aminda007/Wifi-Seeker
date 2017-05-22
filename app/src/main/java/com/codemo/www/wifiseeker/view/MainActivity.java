@@ -258,7 +258,8 @@ public class MainActivity extends AppCompatActivity {
         LocationManager lm =(LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
-////    @Override
+
+//    @Override
 //    public String getwifiDetails() {
 //        wifiInfo =wifiManager.getConnectionInfo();
 //        wifiDetails=" SSID "+wifiInfo.getSSID().toString()+
@@ -271,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
 //                "\n BSSID "+wifiInfo.getBSSID();
 //    return wifiDetails;
 //    }
-//
+
 
 
 

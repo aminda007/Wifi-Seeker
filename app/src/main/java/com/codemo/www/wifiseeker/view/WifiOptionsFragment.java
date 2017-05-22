@@ -115,10 +115,7 @@ public class WifiOptionsFragment extends Fragment {
                         }
                         if(position==1){ // show details  //////////////////////////////////////////////////
                             Log.v("rht","aaaaaaaaaaa  inside Wifioptions fragment aaaaaaaaaaaaaaaa"+index+"swdd"+open );
-
                             WifiOptionsController.showWifiDialog(index,open);
-
-
                         }else if(position==0){  // connect to the network ////////////////////////////////////////////
                             if(!open){
                                 View view1=LayoutInflater.from(getActivity()).inflate(R.layout.wifi_enter_password,null);
@@ -147,13 +144,11 @@ public class WifiOptionsFragment extends Fragment {
                         }
                         else if(position==2){  ///  rating the network  ////////////////////////////////////////
                             if(activity.isGpsAvailable() && activity.isNetworkAvailable()){
-
                                 View view2=LayoutInflater.from(getActivity()).inflate(R.layout.wifi_rate,null);
                                 AlertDialog.Builder alertBuilder = new  AlertDialog.Builder(getActivity());
                                 alertBuilder.setView(view2);
                                 alertBuilder.setIcon(R.drawable.ic_rate);
                                 alertBuilder.setTitle("Give a rating!");
-
                                 ratingBar = (RatingBar) view2.findViewById(R.id.ratingBar);
                                 alertBuilder.setCancelable(true).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override

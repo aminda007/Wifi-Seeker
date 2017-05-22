@@ -179,7 +179,7 @@ public class OnlineDatabaseController extends AsyncTask<String,String,String> {
     protected void onPreExecute() {
         dialog = new ProgressDialog(activity);
         this.dialog.setMessage("Please Wait!!");
-        this.dialog.setCancelable(false);
+        this.dialog.setCancelable(true);
         this.dialog.show();
         super.onPreExecute();
     }
@@ -242,6 +242,7 @@ public class OnlineDatabaseController extends AsyncTask<String,String,String> {
                 }
                 HomeFragment homeFragment =(HomeFragment) manager.findFragmentByTag("HomeFragment");
                 homeFragment.setLocations(locationList);
+//                homeFragment.
             }
             else if(operation=="getNameList"){
                 WifiOptionsFragment fragment =(WifiOptionsFragment) manager.findFragmentByTag("wifiOptionsFragment");

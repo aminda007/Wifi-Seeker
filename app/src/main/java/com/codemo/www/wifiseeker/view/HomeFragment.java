@@ -155,7 +155,6 @@ public class HomeFragment extends Fragment {
             wifiNo.setText(size.toString());
             textNetworks.setText("Wi-Fi networks");
         }
-//        Toast.makeText(this.getContext(),"wifi updated", Toast.LENGTH_SHORT).show();
     }
 
     //Show the open wifi networks
@@ -174,7 +173,6 @@ public class HomeFragment extends Fragment {
             wifiNo.setText(size.toString());
             textNetworks.setText("Wi-Fi networks");
         }
-//        Toast.makeText(this.getContext(),"wifi updated", Toast.LENGTH_SHORT).show();
     }
 
     public void findWifi(){
